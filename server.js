@@ -1,10 +1,13 @@
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: 8080 });
+
+const PORT = process.env.PORT || 8080; // Railway usa process.env.PORT
+const wss = new WebSocket.Server({ port: PORT });
 
 wss.on('connection', (ws) => {
-  console.log("Nuevo cliente conectado");
+  console.log("✅ Nuevo cliente conectado");
 
   ws.on('message', (data) => {
+    // Broadcast a todos los clientes conectados
     wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(data);
@@ -13,8 +16,8 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', () => {
-    console.log("Cliente desconectado");
+    console.log("❌ Cliente desconectado");
   });
 });
 
-console.log("Servidor WebSocket en ws://localhost:8080");
+console.log(`🚀 Servidor WebSocket escuchando en puerto ${PORT}`);
